@@ -39,7 +39,9 @@ output application/json
 				</when>
 				<otherwise>
 					<db:insert doc:name="Insert" doc:id="8896ff48-7f67-46af-b705-3a802b9947d7" config-ref="Database_Config">
+						
 						<db:sql ><![CDATA[insert productCode into forDeletion]]></db:sql>
+					
 					</db:insert>
 					<ee:transform doc:name="Transform Message" doc:id="eb8b78b5-32e1-41fc-8029-47d831e9148b" >
 						<ee:message >
