@@ -1,0 +1,6 @@
+	{
+		"productID": "integer",
+		"productName": "string",
+		"quantity": "integer",
+		"productDescription": "string"
+	}

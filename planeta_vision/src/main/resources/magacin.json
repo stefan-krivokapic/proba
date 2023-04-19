@@ -1,0 +1,26 @@
+[
+	{
+		"productID": 111,
+		"productName": "Nike bosteer 1",
+		"quantity": 12,
+		"productDescription": "Running shoes"
+	},
+	{
+		"productID": 113,
+		"productName": "Addidas Terrex",
+		"quantity": 5,
+		"productDescription": "Climbing shoes"
+	},
+	{
+		"productID": 115,
+		"productName": "Nike predator",
+		"quantity": 21,
+		"productDescription": "Football shoes"
+	},
+	{
+		"productID": 116,
+		"productName": "Nike Lebron 16",
+		"quantity": 2,
+		"productDescription": "Basketaball shoes"
+	}
+]

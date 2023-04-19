@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="85c2955a-7bc7-447d-bc8b-09ebc20371dd" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="root" database="shoe_store" />
+	</db:config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="32a3e2ce-b1f9-4b9d-9526-4a1c07ed4531" />
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="60bba71c-563c-4328-91b3-0b6ef3350781" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="planeta_visionFlow" doc:id="63491bf0-912a-4fff-a9dd-76016a301e9a" >
+		<http:listener doc:name="Listener" doc:id="37037811-4206-4fcf-942c-e9b06e2969ba" config-ref="HTTP_Listener_config" path="/test">
+		</http:listener>
+		<file:read doc:name="Read_warehouse" doc:id="4e5173c7-399f-42e5-bfe5-48a9deae4961" config-ref="File_Config" path="C:\Mulesoft\MUnit Training\magacin.json" outputMimeType="application/json" target="productID"/>
+		<set-variable value="#[payload.productID]" doc:name="productID" doc:id="b7b49cf6-51d6-4310-b39e-46663b1ad040" variableName="productID"/>
+		<db:select doc:name="Select_from_database_products" doc:id="4345f746-6cb8-4232-ae62-ca39740041c7" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from products]]></db:sql>
+		</db:select>
+		<set-variable value="#[payload.productCode]" doc:name="productCode" doc:id="5cfd0cd1-b8a1-49d4-98a9-c5127f2af004" variableName="productCode"/>
+		<foreach doc:name="For Each" doc:id="ed633460-d6ba-448e-b981-7696a48f18b5" collection="#[vars.productCode]">
+			<choice doc:name="Choice" doc:id="2637d7f1-82e7-4d29-aa83-6f125e976083" >
+				<when expression="#[vars.productCode == vars.productID]">
+					<ee:transform doc:name="Transform Message" doc:id="a1040c0f-03e6-40a8-afe8-afe0c29bb75d" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Success"
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+				</when>
+				<otherwise>
+					<db:insert doc:name="Insert" doc:id="8896ff48-7f67-46af-b705-3a802b9947d7" config-ref="Database_Config">
+						<db:sql ><![CDATA[insert productCode into forDeletion]]></db:sql>
+					</db:insert>
+					<ee:transform doc:name="Transform Message" doc:id="eb8b78b5-32e1-41fc-8029-47d831e9148b" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+		message: "Successfully added to the forDeletion table"
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+				</otherwise>
+			</choice>
+		</foreach>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="cb5d0be9-17ca-4e39-bf06-92d563285d28" type="ANY">
+				<logger level="INFO" doc:name="Logger" doc:id="32d64196-ab87-476a-a909-bcab95226e95" message="404"/>
+			</on-error-continue>
+		</error-handler>
+	
+</flow>
+</mule>

@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="test" format="json">
+      <types:shape format="weave" example="examples/test.json"><![CDATA[%dw 2.0
+
+type test = {|
+  productID: String, 
+  productName: String, 
+  quantity: String, 
+  productDescription: String
+|} {"example": "{\\\"productID\\\":\\\"integer\\\",\\\"productName\\\":\\\"string\\\",\\\"quantity\\\":\\\"integer\\\",\\\"productDescription\\\":\\\"string\\\"}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+</types:mule>
