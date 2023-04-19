@@ -14,9 +14,11 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="60bba71c-563c-4328-91b3-0b6ef3350781" >
 		<http:listener-connection host="0.0.0.0" port="8081" />
 	</http:listener-config>
+	
 	<flow name="planeta_visionFlow" doc:id="63491bf0-912a-4fff-a9dd-76016a301e9a" >
 		<http:listener doc:name="Listener" doc:id="37037811-4206-4fcf-942c-e9b06e2969ba" config-ref="HTTP_Listener_config" path="/test">
 		</http:listener>
+		
 		<file:read doc:name="Read_warehouse" doc:id="4e5173c7-399f-42e5-bfe5-48a9deae4961" config-ref="File_Config" path="C:\Mulesoft\MUnit Training\magacin.json" outputMimeType="application/json" target="productID"/>
 		<set-variable value="#[payload.productID]" doc:name="productID" doc:id="b7b49cf6-51d6-4310-b39e-46663b1ad040" variableName="productID"/>
 		<db:select doc:name="Select_from_database_products" doc:id="4345f746-6cb8-4232-ae62-ca39740041c7" config-ref="Database_Config">
@@ -39,7 +41,9 @@ output application/json
 				</when>
 				<otherwise>
 					<db:insert doc:name="Insert" doc:id="8896ff48-7f67-46af-b705-3a802b9947d7" config-ref="Database_Config">
+						
 						<db:sql ><![CDATA[insert productCode into forDeletion]]></db:sql>
+					
 					</db:insert>
 					<ee:transform doc:name="Transform Message" doc:id="eb8b78b5-32e1-41fc-8029-47d831e9148b" >
 						<ee:message >
